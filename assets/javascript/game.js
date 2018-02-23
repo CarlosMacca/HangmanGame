@@ -18,108 +18,90 @@
 // VARIABLES
 // ==========================================================================
 
-       
-var displayWins = document.getElementById("display-wins");
-var displayLosses  = document.getElementById("display-losses");
-var displayWord = document.getElementById("display-word");
-var displayGuesses = document.getElementById("display-guesses");
-var displayLetters = document.getElementById("display-letters");
+    var winCount = document.getElementById("win_count");
+    var current = document.getElementById("current_word");
+    var guessesLeft = document.getElementById("guesses_left");
+    var lettersGuessed = document.getElementById("letters_guessed");
     
-//Possible words to get
-Aeronyde = {
-
-    Words: ["Drone", "Aeronyde", "Unmanned", "Autonomous", "Limitless"],
-
-    displayWord: '',
-    wins: 0,
-    losses: 0,
-    guessedLetters: [],
-    guessRemaining: 0,
-    placeHolder: '',
-    dashes: "_",
-    buffer: 6,
-
-messages = {
-        win: 'You Got It!',
-        lose: 'Game over!',
-        guessed: ' already guessed, please try again...',
-        validLetter: 'Please enter a letter from A-Z'
-    };
-
-// FUNCTIONS
-// ==============================================================================
-
-
-startGame: function () {
-    writeDocument();
-},
-
-displayRandomWord: function () {
-    this.guessedLetters = [];
-    this.displayWord = this.words[Math.floor(Math.random() * this.words.length)];
-    this.guessRemaining = this.displayWord.length + this.buffer;
-    this.placeHolder = this.dashes.repeat(this.displayWord.length);
-},
-
-mainProcess: function (letterGuessed) {
-
-    if (this.guessedLetters.indexOf(letterGuessed) == -1) {
-        if (this.pickedWord.includes(letterGuessed)) {
-
-            var characterArray = this.placeHolder.split('');
-
-            for (var i = 0; i < this.pickedWord.length; i++) {
-                if (this.pickedWord[i] === letterGuessed) {
-                    characterArray[i] = letterGuessed;
+    
+    var aeronyde = {
+    
+        listOfWords: ["drone", "aeronyde", "unmanned", "autonomous", "limitless"],
+    
+        pickedWord: '',
+        wins: 0,
+        losses: 0,
+        guessedLetters: [],
+        guessRemaining: 0,
+        placeHolder: '',
+        dashes: "_",
+        buffer: -2,
+    
+        gameStart: function () {
+            writeDocument();
+        },
+    
+        gameReset: function () {
+            this.guessedLetters = [];
+            this.pickedWord = this.listOfWords[Math.floor(Math.random() * this.listOfWords.length)];
+            this.guessRemaining = this.pickedWord.length + this.buffer;
+            this.placeHolder = this.dashes.repeat(this.pickedWord.length);
+            console.log("current word: " + this.pickedWord);
+        },
+    
+        userInput: function (letterGuessed) {
+    
+            if (this.guessedLetters.indexOf(letterGuessed) == -1) {
+                if (this.pickedWord.includes(letterGuessed)) {
+    
+                    var characterArray = this.placeHolder.split('');
+    
+                    for (var i = 0; i < this.pickedWord.length; i++) {
+                        if (this.pickedWord[i] === letterGuessed) {
+                            characterArray[i] = letterGuessed;
+                        }
+                    }
+                    this.placeHolder = characterArray.join('');
+    
+                    if (this.pickedWord === this.placeHolder) {
+                        this.wins++;
+                        this.gameReset();
+                    }
+    
+                } else {
+                    this.guessedLetters.push(letterGuessed);
+                    this.guessRemaining--;
+    
+                    if (this.guessRemaining == 0) {
+                        alert("You lose!");
+                        this.losses++;
+                        this.gameReset();
+                    }
                 }
+    
+                writeDocument();
+    
             }
-            this.placeHolder = characterArray.join('');
-
-            if (this.pickedWord === this.placeHolder) {
-                this.wins++;
-                this.gameReset();
-            }
-
-        } else {
-            this.guessedLetters.push(letterGuessed);
-            this.guessRemaining--;
-
-            if (this.guessRemaining == 0) {
-                alert("You lose!");
-                this.losses++;
-                this.gameReset();
-            }
+    
         }
-
-        writeDocument();
-
+    
+    };
+    
+    aeronyde.gameReset();
+    
+    aeronyde.gameStart();
+    
+    function writeDocument() {
+        winCount.textContent = aeronyde.wins;
+        current.textContent = aeronyde.placeHolder.split('').join(" ");
+        guesses_left.textContent = aeronyde.guessRemaining;
+        lettersGuessed.textContent = aeronyde.guessedLetters.join(" ");
     }
-
-}
-
-};
-
-superHeroes.gameReset();
-
-superHeroes.gameStart();
-
-
-
-// MAIN PROCESS
-// ==============================================================================
-
-function writeDocument() {
-    winCount.textContent = superHeroes.wins;
-    lossCount.textContent = superHeroes.losses;
-    current.textContent = superHeroes.placeHolder.split('').join(" ");
-    guesses_left.textContent = superHeroes.guessRemaining;
-    lettersGuessed.textContent = superHeroes.guessedLetters.join(" ");
-}
-
-
-document.onkeyup = function (event) {
-
-    var characterGuess = event.key;
-
-    superHeroes.userInput(characterGuess);
-}
+    
+    
+    document.onkeyup = function (event) {
+    
+        var characterGuess = event.key;
+    
+        aeronyde.userInput(characterGuess);
+    }
